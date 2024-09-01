@@ -1,10 +1,10 @@
 export default class Board {
     // will store the boards as a 1 dimensional array
 
-    constructor(board, blankIndex) {
+    constructor(board, blankIndex, prev) {
         this.board = board;
         this.blankIndex = blankIndex;
-        this.prev = null;
+        this.prev = prev;
     }
 
     // assumes board state is stores as a one dimensional array
@@ -12,22 +12,22 @@ export default class Board {
         var blankIndex = this.blankIndex;
         switch(direction){
             case 'up':
-                this.swap(this.board, blankIndex, blankIndex-maxD);
+                this.swap(blankIndex, blankIndex-maxD);
                 this.blankIndex -= maxD;
                 break;
 
             case 'down':
-                this.swap(this.board, blankIndex, blankIndex+maxD);
+                this.swap(blankIndex, blankIndex+maxD);
                 this.blankIndex += maxD;
                 break;
 
             case 'right':
-                this.swap(this.board, blankIndex, blankIndex+1);
+                this.swap(blankIndex, blankIndex+1);
                 this.blankIndex++;
                 break;
 
             case 'left':
-                this.swap(this.board, blankIndex, blankIndex-1);
+                this.swap(blankIndex, blankIndex-1);
                 this.blankIndex--;
                 break;
             
@@ -40,19 +40,19 @@ export default class Board {
         let possibleSwaps = [];
         let numTiles = maxD * maxD;
 
-        if (blankIndex > maxD - 1){ // if not on first row, indices 0, 1, 2 for maxD of 3
+        if (this.blankIndex > maxD - 1){ // if not on first row, indices 0, 1, 2 for maxD of 3
             possibleSwaps.push("up");
         }
 
-        if (blankIndex < numTiles - maxD - 1){ // if not on last row, indices 6,7,8 for maxD of 3
+        if (this.blankIndex < numTiles - maxD){ // if not on last row, indices 6,7,8 for maxD of 3
             possibleSwaps.push("down");
         }
 
-        if (blankIndex % max > 0){ // if not in left column
+        if (this.blankIndex % maxD > 0){ // if not in left column
             possibleSwaps.push("left");
         }
 
-        if (blankIndex % maxD < maxD - 1){ // if not in right column
+        if (this.blankIndex % maxD < maxD - 1){ // if not in right column
             possibleSwaps.push("right");
         }
 
@@ -60,10 +60,10 @@ export default class Board {
 
     }
 
-    swap(arr, i1, i2){
-        let temp = arr[i1];
-        arr[i1] = arr[i2];
-        arr[i2] = temp;
+    swap(i1, i2){
+        let temp = this.board[i1];
+        this.board[i1] = this.board[i2];
+        this.board[i2] = temp;
     }
 
     toString(){
@@ -71,8 +71,8 @@ export default class Board {
     }
 
     path(){
-        path = [];
-        for (iter = this; iter != null; iter = this.prev){
+        let path = [];
+        for (let iter = this; iter != null; iter = iter.prev){
             path.push(iter.board)
         }
         return path;
